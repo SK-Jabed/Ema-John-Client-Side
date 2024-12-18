@@ -5,6 +5,7 @@ import './ReviewItem.css';
 
 const ReviewItem = ({ product, handleRemoveFromCart }) => {
     const { _id, img, price, name, quantity } = product;
+    
     return (
         <div className='review-item'>
             <img src={img} alt="" />
