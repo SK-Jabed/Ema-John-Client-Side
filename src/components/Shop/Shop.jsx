@@ -4,11 +4,11 @@ import Cart from '../Cart/Cart';
 import Product from '../Product/Product';
 import './Shop.css';
 import { Link, useLoaderData } from 'react-router-dom';
-import { setItem } from 'localforage';
 
 const Shop = () => {
     const [products, setProducts] = useState([]);
     const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(0);
     const [cart, setCart] = useState([]);
     const { count } = useLoaderData();
     const numberOfPages = Math.ceil(count / itemsPerPage);
@@ -77,41 +77,63 @@ const Shop = () => {
         console.log(value);
 
         setItemsPerPage(value);
+        setCurrentPage(0);
+    }
+
+    const handlePreviousPage = () => {
+        if (currentPage > 0) {
+            setCurrentPage(currentPage - 1);
+        }
+    }
+
+    const handleNextPage = () => {
+        if (currentPage < pages.length - 1) {
+            setCurrentPage(currentPage + 1);
+        }
     }
 
     return (
-        <div className='shop-container'>
-            <div className="products-container">
-                {
-                    products.map(product => <Product
-                        key={product._id}
-                        product={product}
-                        handleAddToCart={handleAddToCart}
-                    ></Product>)
-                }
-            </div>
-            <div className="cart-container">
-                <Cart
-                    cart={cart}
-                    handleClearCart={handleClearCart}
-                >
-                    <Link className='proceed-link' to="/orders">
-                        <button className='btn-proceed'>Review Order</button>
-                    </Link>
-                </Cart>
-            </div>
-            <div className='pagination'>
-                {
-                    pages.map(page => <button key={page}>{page}</button>)
-                }
-                <select value={itemsPerPage} onChange={handleItemsPerPage}>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
-                </select>
-            </div>
+      <div className="shop-container">
+        <div className="products-container">
+          {products.map((product) => (
+            <Product
+              key={product._id}
+              product={product}
+              handleAddToCart={handleAddToCart}
+            ></Product>
+          ))}
         </div>
+        <div className="cart-container">
+          <Cart cart={cart} handleClearCart={handleClearCart}>
+            <Link className="proceed-link" to="/orders">
+              <button className="btn-proceed">Review Order</button>
+            </Link>
+          </Cart>
+        </div>
+        <div className="pagination">
+          <button onClick={handlePreviousPage}>
+            Previous
+          </button>
+          {pages.map((page) => (
+            <button
+              className={currentPage === page && "selected"}
+              onClick={() => setCurrentPage(page)}
+              key={page}
+            >
+              {page}
+            </button>
+          ))}
+          <button onClick={handleNextPage}>
+            Next
+          </button>
+          <select value={itemsPerPage} onChange={handleItemsPerPage}>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+          </select>
+        </div>
+      </div>
     );
 };
 
