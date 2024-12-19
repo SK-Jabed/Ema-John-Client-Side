@@ -3,11 +3,22 @@ import { addToDb, deleteShoppingCart, getShoppingCart } from '../../utilities/fa
 import Cart from '../Cart/Cart';
 import Product from '../Product/Product';
 import './Shop.css';
-import { Link } from 'react-router-dom';
+import { Link, useLoaderData } from 'react-router-dom';
+import { setItem } from 'localforage';
 
 const Shop = () => {
     const [products, setProducts] = useState([]);
-    const [cart, setCart] = useState([])
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [cart, setCart] = useState([]);
+    const { count } = useLoaderData();
+    const numberOfPages = Math.ceil(count / itemsPerPage);
+
+    // const pages = []
+    // for (let i = 0; i < numberOfPages; i++) {
+    //     pages.push(i)
+    // }
+
+    const pages = [...Array(numberOfPages).keys()];
 
     useEffect(() => {
         fetch('http://localhost:5000/products')
@@ -61,6 +72,13 @@ const Shop = () => {
         deleteShoppingCart();
     }
 
+    const handleItemsPerPage = (e) => {
+        const value = parseInt(e.target.value);
+        console.log(value);
+
+        setItemsPerPage(value);
+    }
+
     return (
         <div className='shop-container'>
             <div className="products-container">
@@ -81,6 +99,17 @@ const Shop = () => {
                         <button className='btn-proceed'>Review Order</button>
                     </Link>
                 </Cart>
+            </div>
+            <div className='pagination'>
+                {
+                    pages.map(page => <button key={page}>{page}</button>)
+                }
+                <select value={itemsPerPage} onChange={handleItemsPerPage}>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
             </div>
         </div>
     );
