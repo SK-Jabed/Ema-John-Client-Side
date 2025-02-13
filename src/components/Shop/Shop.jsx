@@ -80,7 +80,11 @@ const Shop = () => {
 
 
 
+
+
+
     
+
     const handleClearCart = () => {
         setCart([]);
         deleteShoppingCart();
