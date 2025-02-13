@@ -78,6 +78,9 @@ const Shop = () => {
         addToDb(product._id)
     }
 
+
+
+    
     const handleClearCart = () => {
         setCart([]);
         deleteShoppingCart();
